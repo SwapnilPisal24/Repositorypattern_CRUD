@@ -11,6 +11,6 @@ namespace Repositorypattern.Entities
         public int Id { get; set; }
         public string Name { get; set; } = "Default City";
         public int StateId { get; set; }
-        public State State { get; set; } = new();
+        public State? State { get; set; } 
     }
 }

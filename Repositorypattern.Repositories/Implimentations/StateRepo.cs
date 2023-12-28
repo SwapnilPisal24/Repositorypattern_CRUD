@@ -1,4 +1,5 @@
-﻿using Repositorypattern.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Repositorypattern.Entities;
 using Repositorypattern.repositories;
 using Repositorypattern.Repositories.Interfaces;
 using System;
@@ -33,7 +34,7 @@ namespace Repositorypattern.Repositories.Implimentations
 
         public IEnumerable<State> GetAll()
         {
-            var States = _context.states.ToList();
+            var States = _context.states.Include(x => x.Country).ToList(); // Include use for agor loading
             return States;
         }
 

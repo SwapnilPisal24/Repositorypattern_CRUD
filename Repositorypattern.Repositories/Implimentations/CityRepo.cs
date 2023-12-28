@@ -1,4 +1,5 @@
-﻿using Repositorypattern.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Repositorypattern.Entities;
 using Repositorypattern.repositories;
 using Repositorypattern.Repositories.Interfaces;
 using System;
@@ -33,7 +34,7 @@ namespace Repositorypattern.Repositories.Implimentations
 
         public IEnumerable<City> GetAll()
         {
-            var cities = _context.cities.ToList();
+            var cities = _context.cities.Include(x => x.State.Country).ToList();
             return cities;
         }
 

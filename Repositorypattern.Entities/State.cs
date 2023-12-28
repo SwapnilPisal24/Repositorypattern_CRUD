@@ -14,7 +14,7 @@ namespace Repositorypattern.Entities
         public int Id { get; set; }
         public string Name { get; set; } = "Default State";
         public int CountryId { get; set; } // Foriegn key
-        public Country Country { get; set; } = new();        
+        public Country? Country { get; set; }       
         public ICollection<City> Cities { get; set; } = new HashSet<City>();
     }
 }
