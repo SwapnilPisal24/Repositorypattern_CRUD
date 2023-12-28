@@ -15,8 +15,12 @@ namespace Repositorypattern.UI.Controllers
 
         public IActionResult Index()
         {
-            var countries = _countryRepo.GetAll();
-            return View(countries);
+            if(HttpContext.Session.GetInt32("UserId")!=null)
+            {
+                var countries = _countryRepo.GetAll();
+                return View(countries);
+            }
+            return RedirectToAction("Login","Auth");
         }
         [HttpGet]
         public IActionResult Create()
