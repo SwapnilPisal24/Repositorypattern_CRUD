@@ -20,4 +20,8 @@
     <ProjectReference Include="..\Repositorypattern.Repositories\Repositorypattern.Repositories.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\CountryImage\" />
+  </ItemGroup>
+
 </Project>
