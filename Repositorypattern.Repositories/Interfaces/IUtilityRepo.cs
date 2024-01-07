@@ -11,6 +11,6 @@ namespace Repositorypattern.Repositories.Interfaces
     {
         Task<string> SaveImage(string ContainerName, IFormFile formFile);   
         Task<string> EditImage(string ContainerName, IFormFile formFile, string dbPath);
-        Task DeleteFile(string ContainerName, string dbPath);
+        Task DeleteImage(string ContainerName, string dbPath);
     }
 }

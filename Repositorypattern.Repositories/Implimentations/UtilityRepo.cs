@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Repositorypattern.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,19 +12,57 @@ namespace Repositorypattern.Repositories.Implimentations
 {
     public class UtilityRepo : IUtilityRepo
     {
-        public Task DeleteFile(string ContainerName, string dbPath)
+        private IWebHostEnvironment _env;
+        private IHttpContextAccessor _contextAccessor;
+
+        public UtilityRepo(IWebHostEnvironment env, IHttpContextAccessor contextAccessor)
         {
-            throw new NotImplementedException();
+            _env = env;
+            _contextAccessor = contextAccessor;     
         }
 
-        public Task<string> EditImage(string ContainerName, IFormFile formFile, string dbPath)
+        public Task DeleteImage(string ContainerName, string dbPath)
         {
-            throw new NotImplementedException();
+            if(!string.IsNullOrEmpty(dbPath))
+            {
+                return Task.CompletedTask;
+            }
+            var filename = Path.GetFileName(dbPath);
+            var completePath = Path.Combine(_env.WebRootPath, ContainerName, filename);
+            if(File.Exists(completePath))
+            {
+                File.Delete(completePath);
+            }
+            return Task.CompletedTask;
         }
 
-        public Task<string> SaveImage(string ContainerName, IFormFile formFile)
+        public async Task<string> EditImage(string ContainerName, IFormFile formFile, string dbPath)
         {
-            throw new NotImplementedException();
+            await DeleteImage(ContainerName, dbPath);
+            return await SaveImage(ContainerName, formFile);
+
+        }
+
+        public async Task<string> SaveImage(string ContainerName, IFormFile formFile)
+        {
+            var extension = Path.GetExtension(formFile.FileName);
+            var filename = $"{Guid.NewGuid}{extension}";
+            string folder = Path.Combine(_env.WebRootPath, ContainerName);
+            if(!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+            string filePath = Path.Combine(folder, filename);
+            using (var memoryStream = new MemoryStream())
+            {
+                await formFile.CopyToAsync(memoryStream);
+                var content = memoryStream.ToArray();
+                await File.WriteAllBytesAsync(filePath, content);
+
+            }
+            var basepath = $"{_contextAccessor.HttpContext.Request.Scheme}://{_contextAccessor.HttpContext.Request.Host}";
+            var completepath = Path.Combine(basepath, ContainerName, filename).Replace("\\", "/");
+            return completepath;
         }
     }
 }
